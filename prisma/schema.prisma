@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId          String    @id @default(uuid()) // UUID for user ID
+  firstName       String
+  lastName        String
+  unique_register String
+  email           String    @unique
+  phoneNumber     String?
+  gender          Gender    @default(MALE)
+  birthdayDate    DateTime?
+  hashPassword    String
+  userType        UserType  @default(STUDENT)
+  hashedRt        String?
+  // membershipId   String?   @map("membership_ID") // Optional, UUID for membership
+  // checkoutStatus String?   @map("checkout_status") // Optional, UUID for checkout status
+  createdAt       DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime  @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@map("users")
+}
+
+enum UserType {
+  STUDENT
+  ADMIN
+  SUPPORT
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
